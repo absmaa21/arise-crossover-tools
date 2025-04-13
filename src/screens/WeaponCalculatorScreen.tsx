@@ -1,15 +1,19 @@
 import {useEffect, useState} from "react"
 import {Card, CardContent, Container, Grid, MenuItem, TextField, Typography} from "@mui/material";
 import {Rank} from "../entities/rank.ts";
+import {Potency} from "../entities/potency.ts";
+import {getFormattedNumber} from "../utils/getFormattedNumber.ts";
 
 const RANKS: string[] = Object.keys(Rank).filter((key) => Rank[key as keyof typeof Rank] <= Rank.SS)
+const NUMBER_PREFIX: string[] = Object.keys(Potency).filter((key) => isNaN(Number(key)))
 
 
 function WeaponCalculatorScreen() {
   const [swords, setSwords] = useState<Record<string, number>>({});
   const [targetRank, setTargetRank] = useState<Rank>(Rank.SS);
   const [result, setResult] = useState<string | null>(null);
-  const [price, setPrice] = useState<number>(1.33)
+  const [price, setPrice] = useState<number>(86.58)
+  const [pricePotency, setPricePotency] = useState<Potency>(Potency.Qa)
 
   const handleSwordChange = (rank: string, value: string) => {
     const new_num = parseInt(value, 10) || 0
@@ -24,7 +28,7 @@ function WeaponCalculatorScreen() {
 
     let missing = 3;
 
-    for (let rank: Rank = RANKS.length-1; rank > Rank.E; rank--) {
+    for (let rank: Rank = targetRank; rank > Rank.E; rank--) {
 
       const cur_rank_key = Object.values(Rank)[rank]
       const owned = swords[cur_rank_key] || 0
@@ -47,12 +51,12 @@ function WeaponCalculatorScreen() {
     }
 
     missing -= swords[Object.values(Rank)[Rank.E]] || 0
-    setResult(`Missing E Swords: ${missing}\nCosts: ${missing * price}Qa`);
+    setResult(`Missing E Swords: ${missing}\nCosts: ${getFormattedNumber(missing * price * pricePotency)}`);
   };
 
   useEffect(() => {
     calculate()
-  }, [swords, price]);
+  }, [swords, price, targetRank, pricePotency]);
 
   return (
     <Container maxWidth="xs">
@@ -75,7 +79,7 @@ function WeaponCalculatorScreen() {
       </Grid>
 
       <Grid container spacing={2} marginTop={4}>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid size={{ xs: 12, sm: 4 }}>
           <TextField
             select
             label="Target Rank"
@@ -88,7 +92,8 @@ function WeaponCalculatorScreen() {
             ))}
           </TextField>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6 }}>
+        <Grid size={{ xs: 0, sm: 1 }}/>
+        <Grid size={{ xs: 8, sm: 4 }}>
           <TextField
             type={"number"}
             fullWidth
@@ -96,6 +101,19 @@ function WeaponCalculatorScreen() {
             value={price}
             onChange={(e) => setPrice(Number.parseFloat(e.target.value))}
           />
+        </Grid>
+        <Grid size={{ xs: 4, sm: 3 }}>
+          <TextField
+            select
+            label="Potency"
+            fullWidth
+            value={pricePotency}
+            onChange={(e) => setPricePotency(Number(e.target.value))}
+          >
+            {NUMBER_PREFIX.map((pot) => (
+              <MenuItem key={pot} value={Potency[pot as keyof typeof Potency]}>{pot}</MenuItem>
+            ))}
+          </TextField>
         </Grid>
       </Grid>
 
