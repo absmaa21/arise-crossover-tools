@@ -20,7 +20,7 @@ const HomeButton = () => {
             position: 'fixed',
             bottom: 28,
             left: 24,
-            zIndex: 999,
+            zIndex: 1,
           }}
         >
           <Tooltip title="Go to Home">

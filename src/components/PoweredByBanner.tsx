@@ -1,5 +1,7 @@
 import { Box, Typography, Avatar } from '@mui/material';
 import MascotLogo from '../assets/guild-logo.png';
+import HomeButton from "./HomeButton.tsx";
+import SettingsButton from "./SettingsButton.tsx";
 
 const PoweredByBanner = () => (
   <Box
@@ -14,8 +16,12 @@ const PoweredByBanner = () => (
       justifyContent: 'center',
       py: 1,
       px: 2,
+      zIndex: 99,
     }}
   >
+    <HomeButton/>
+    <SettingsButton/>
+
     <Box
       sx={{
         display: 'flex',
