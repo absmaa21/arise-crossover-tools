@@ -1,5 +1,5 @@
 import { Box, Typography, Avatar } from '@mui/material';
-import MascotLogo from '../assets/knuckles-logo-new.png';
+import MascotLogo from '../assets/guild-logo.png';
 
 const PoweredByBanner = () => (
   <Box
