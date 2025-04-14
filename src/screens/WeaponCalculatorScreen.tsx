@@ -92,7 +92,7 @@ function WeaponCalculatorScreen() {
             ))}
           </TextField>
         </Grid>
-        <Grid size={{ xs: 0, sm: 1 }}/>
+        <Grid size={{ sm: 1 }} sx={{ display: { xs: 'none', sm: 'block' } }}/>
         <Grid size={{ xs: 8, sm: 4 }}>
           <TextField
             type={"number"}
@@ -102,7 +102,7 @@ function WeaponCalculatorScreen() {
             onChange={(e) => setPrice(Number.parseFloat(e.target.value))}
           />
         </Grid>
-        <Grid size={{ xs: 4, sm: 3 }}>
+        <Grid size={{ xs: 4, sm: 3 }} >
           <TextField
             select
             label="Potency"

@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {ITER_POTENCY, Potency} from "../entities/potency.ts";
-import {Container, Grid, IconButton, MenuItem, Paper, TextField, Tooltip, Typography} from "@mui/material";
+import {Container, Grid, IconButton, MenuItem, Paper, TextField, Tooltip, Typography, Box} from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check"
 
@@ -60,13 +60,15 @@ function GemContributionScreen() {
         </Grid>
 
         <Grid size={12}>
-          <Paper elevation={2} sx={{ padding: 2, display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-            <div>
+          <Paper elevation={2} sx={{ padding: 2, display: 'flex', justifyContent: 'space-around' }}>
+            <Box
+              sx={{ overflow: 'hidden' }}
+            >
               <Typography variant="subtitle1">Total Contribution:</Typography>
-              <Typography variant="h6">
+              <Typography variant="h6" textOverflow="ellipsis" overflow="hidden">
                 {contribution.toLocaleString()}
               </Typography>
-            </div>
+            </Box>
 
             <Tooltip title={copied ? 'Copied!' : 'Copy to clipboard'}>
               <IconButton onClick={handleCopy}>

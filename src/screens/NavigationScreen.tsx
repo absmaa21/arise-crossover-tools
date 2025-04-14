@@ -61,15 +61,19 @@ function NavigationScreen() {
         component='h1'
         variant='h2'
         letterSpacing={3}
-        sx={{mb: 2}}
+        noWrap
+        sx={{ mb: 2, fontSize: 'clamp(3rem, 10vw, 4rem)', }}
       >
         ARISE TOOLS
       </Typography>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={2} display={'flex'} justifyContent={'center'}>
         {PAGES.map(page => (
-          <Grid size={{xs: 12, sm: 6, md: 6}} onClick={() => navigation(page.path)}>
-            <ImageContainer sx={{aspectRatio: 1}}>
+          <Grid
+            size={'auto'}
+            onClick={() => navigation(page.path)}
+          >
+            <ImageContainer sx={{ aspectRatio: 1 }}>
               <BackgroundImage src={page.image} alt={page.title} className="image" />
               <Overlay className="overlay">
                 <Typography variant="h5" color="white">
