@@ -7,7 +7,7 @@ import CheckIcon from "@mui/icons-material/Check"
 function GemContributionScreen() {
 
   const [potency, setPotency] = useState<Potency>(Potency.Qa)
-  const [value, setValue] = useState<number>(10)
+  const [value, setValue] = useState<number>(100)
   const [contribution, setContribution] = useState<number>(0)
 
   const [copied, setCopied] = useState(false);
@@ -60,7 +60,18 @@ function GemContributionScreen() {
         </Grid>
 
         <Grid size={12}>
-          <Paper elevation={2} sx={{ padding: 2, display: 'flex', justifyContent: 'space-around' }}>
+          <Paper
+            elevation={2}
+            sx={{
+              padding: 2,
+              display: 'flex',
+              justifyContent: 'space-around',
+              '&:hover': {
+                cursor: 'pointer',
+              },
+            }}
+            onClick={handleCopy}
+          >
             <Box
               sx={{ overflow: 'hidden' }}
             >
@@ -71,7 +82,7 @@ function GemContributionScreen() {
             </Box>
 
             <Tooltip title={copied ? 'Copied!' : 'Copy to clipboard'}>
-              <IconButton onClick={handleCopy}>
+              <IconButton>
                 {copied ? <CheckIcon color="success" /> : <ContentCopyIcon />}
               </IconButton>
             </Tooltip>
