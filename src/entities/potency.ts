@@ -9,3 +9,5 @@ export enum Potency {
   Ot = 10**27,
   No = 10**30,
 }
+
+export const ITER_POTENCY: string[] = Object.keys(Potency).filter((key) => isNaN(Number(key)))
