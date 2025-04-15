@@ -2,6 +2,7 @@ import { Box, Typography, Avatar } from '@mui/material';
 import MascotLogo from '../assets/guild-logo.png';
 import HomeButton from "./HomeButton.tsx";
 import SettingsButton from "./SettingsButton.tsx";
+import {DiscordLink} from "../services/const.ts";
 
 const PoweredByBanner = () => (
   <Box
@@ -30,7 +31,7 @@ const PoweredByBanner = () => (
           cursor: 'pointer'
         },
       }}
-      onClick={() => window.open('https://discord.gg/qQ9jwHxfFY', '_blank', 'noopener,noreferrer')}
+      onClick={() => window.open(DiscordLink, '_blank', 'noopener,noreferrer')}
     >
       <Avatar src={MascotLogo} sx={{ height: 40, width: 40, mr: 1 }} />
       <Typography variant="body2" color="white" fontWeight={500}>

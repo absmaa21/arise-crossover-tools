@@ -1,0 +1,1 @@
+export const DiscordLink: string = "https://discord.gg/fp9kPzfvVX"
