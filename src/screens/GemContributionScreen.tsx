@@ -6,8 +6,8 @@ import CheckIcon from "@mui/icons-material/Check"
 
 function GemContributionScreen() {
 
-  const [potency, setPotency] = useState<Potency>(Potency.Qa)
-  const [value, setValue] = useState<number>(100)
+  const [potency, setPotency] = useState<Potency>(Potency.Qi)
+  const [value, setValue] = useState<number>(50)
   const [contribution, setContribution] = useState<number>(0)
 
   const [copied, setCopied] = useState(false);

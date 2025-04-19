@@ -12,8 +12,8 @@ function WeaponCalculatorScreen() {
   const [swords, setSwords] = useState<Record<string, number>>({});
   const [targetRank, setTargetRank] = useState<Rank>(Rank.SS);
   const [result, setResult] = useState<string | null>(null);
-  const [price, setPrice] = useState<number>(86.58)
-  const [pricePotency, setPricePotency] = useState<Potency>(Potency.Qa)
+  const [price, setPrice] = useState<number>(5.20)
+  const [pricePotency, setPricePotency] = useState<Potency>(Potency.Qi)
 
   const handleSwordChange = (rank: string, value: string) => {
     const new_num = parseInt(value, 10) || 0
