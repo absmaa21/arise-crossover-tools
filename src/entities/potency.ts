@@ -1,4 +1,6 @@
 export enum Potency {
+  None = 10**0,
+  k = 10**3,
   M = 10**6,
   B = 10**9,
   T = 10**12,

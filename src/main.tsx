@@ -4,6 +4,8 @@ import './index.css'
 import App from './App.tsx'
 import {createTheme, CssBaseline, ThemeProvider} from "@mui/material";
 import {SettingsProvider} from "./contexts/SettingsContext.tsx";
+import GuildProvider from "./contexts/GuildContext.tsx";
+import {NotificationsProvider} from "@toolpad/core";
 
 const darkTheme = createTheme({
   palette: {
@@ -15,8 +17,12 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider theme={darkTheme}>
       <SettingsProvider>
-        <CssBaseline/>
-        <App />
+        <GuildProvider>
+          <NotificationsProvider>
+            <CssBaseline/>
+            <App />
+          </NotificationsProvider>
+        </GuildProvider>
       </SettingsProvider>
     </ThemeProvider>
   </StrictMode>,
