@@ -24,6 +24,7 @@ import {useNotifications} from "@toolpad/core";
 interface Props {
   guild?: Guild;
   onSubmit: (guild: Guild) => void;
+  isCreation?: boolean;
 }
 
 const daysOfWeek = [
@@ -44,7 +45,7 @@ const emptyGuild: Guild = {
   members: [],
 }
 
-const GuildForm: React.FC<Props> = ({ guild: initialGuild, onSubmit }) => {
+const GuildForm: React.FC<Props> = ({ guild: initialGuild, onSubmit, isCreation }) => {
 
   const notify = useNotifications()
   const [guild, setGuild] = useState<Guild>(initialGuild ?? emptyGuild);
@@ -296,15 +297,20 @@ const GuildForm: React.FC<Props> = ({ guild: initialGuild, onSubmit }) => {
 
             {/* Submit Button */}
             <Grid size={8}>
-              <Button type="submit" variant="contained" color="primary" size="large">
+              <Button type="submit" variant="contained" color="primary" size="large" disabled={guild.name.trim().length <= 0} onClick={() => {
+                if (guild.name.trim().length <= 0) return
+                if (onSubmit) onSubmit(guild)
+              }}>
                 Save Guild
               </Button>
             </Grid>
             <Grid size={2} sx={{placeSelf: 'self-end'}}>
-              <Button fullWidth variant="outlined" color="primary" size="medium" disabled={guild.name.trim().length <= 0}
-                      onClick={() => saveAsJson(guild, 'guild.json')}>
-                Export
-              </Button>
+              {!isCreation && (
+                <Button fullWidth variant="outlined" color="primary" size="medium" disabled={guild.name.trim().length <= 0}
+                        onClick={() => saveAsJson(guild, 'guild.json')}>
+                  Export
+                </Button>
+              )}
             </Grid>
             <Grid size={2} sx={{placeSelf: 'self-end'}}>
               <Button fullWidth variant="outlined" color="primary" size="medium" onClick={() => loadJsonFile().then(data => {

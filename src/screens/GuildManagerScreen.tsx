@@ -18,7 +18,7 @@ function GuildManagerScreen() {
 
   if (!guild) return (
     <Box sx={{textAlign: 'left'}}>
-      <GuildForm onSubmit={changeGuild}/>
+      <GuildForm onSubmit={changeGuild} isCreation/>
     </Box>
   )
 
