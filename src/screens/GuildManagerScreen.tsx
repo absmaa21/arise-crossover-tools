@@ -16,7 +16,11 @@ function GuildManagerScreen() {
     changeGuild(newGuild)
   }
 
-  if (!guild) return <GuildForm onSubmit={changeGuild}/>
+  if (!guild) return (
+    <Box sx={{textAlign: 'left'}}>
+      <GuildForm onSubmit={changeGuild}/>
+    </Box>
+  )
 
   return (
     <Container maxWidth="md">
