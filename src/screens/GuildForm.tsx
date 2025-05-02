@@ -306,9 +306,10 @@ const GuildForm: React.FC<Props> = ({ guild: initialGuild, onSubmit }) => {
               </Button>
             </Grid>
             <Grid size={2} sx={{placeSelf: 'self-end'}}>
-              <Button fullWidth variant="outlined" color="primary" size="medium" onClick={() => loadJsonFile().then(data => {
-                setGuild(data as Guild)
-                notify.show('Guild successfully loaded!', {autoHideDuration: 2000, severity: 'success'})
+              <Button fullWidth variant="outlined" color="primary" size="medium" disabled={guild.name.trim().length <= 0}
+                      onClick={() => loadJsonFile().then(data => {
+                          setGuild(data as Guild)
+                          notify.show('Guild successfully loaded!', {autoHideDuration: 2000, severity: 'success'})
               }).catch(e => {
                 console.log('Error: ', e)
                 notify.show('Error loading the guild!', {autoHideDuration: 5000, severity: 'error'})
