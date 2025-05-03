@@ -21,4 +21,14 @@ export interface GuildMember {
     value: number,
     date: number,
   }[],
+  note: string,
+}
+
+export const emptyGuildMember: GuildMember = {
+  rbxName: '',
+  displayName: '',
+  discord: '',
+  joinedAt: Date.now(),
+  gemChecks: [],
+  note: '',
 }

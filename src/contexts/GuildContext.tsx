@@ -1,9 +1,19 @@
 import {GuildContext} from "./contexts.ts";
 import {ReactNode, useEffect, useState} from "react";
-import {Guild} from "../entities/guild.ts";
+import {emptyGuildMember, Guild} from "../entities/guild.ts";
 
 interface Props {
   children: ReactNode,
+}
+
+function checkForMissingFields(guild: Guild): Guild {
+  return {
+    ...guild,
+    members: guild.members.map(m => ({
+      ...emptyGuildMember,
+      ...m,
+    }))
+  }
 }
 
 function GuildProvider({children}: Props) {
@@ -15,11 +25,12 @@ function GuildProvider({children}: Props) {
     if (loaded) {
       const loadedGuild: Guild = JSON.parse(loaded)
       loadedGuild.members = loadedGuild.members.filter((m, i, s) => i === s.findIndex(o => o.rbxName === m.rbxName))
-      setGuild(loadedGuild)
+      setGuild(checkForMissingFields(loadedGuild))
     }
   }, []);
 
   const changeGuild = (newGuild: Guild) => {
+    newGuild = checkForMissingFields(newGuild)
     localStorage.setItem('guild', JSON.stringify(newGuild))
     setGuild(newGuild)
   }

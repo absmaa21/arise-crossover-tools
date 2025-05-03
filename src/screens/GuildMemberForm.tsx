@@ -1,4 +1,4 @@
-import {GuildMember} from "../entities/guild.ts";
+import {emptyGuildMember, GuildMember} from "../entities/guild.ts";
 import {useState} from "react";
 import {Button, Container, Grid, IconButton, MenuItem, Paper, TextField, Typography} from "@mui/material";
 import {Delete, Save} from "@mui/icons-material";
@@ -16,13 +16,7 @@ interface Props {
 function GuildMemberForm({initMember, onSubmit}: Props) {
 
   const {guild, changeGuild} = useGuild()
-  const [member, setMember] = useState<GuildMember>(initMember ?? {
-    rbxName: '',
-    displayName: '',
-    discord: '',
-    gemChecks: [],
-    joinedAt: Date.now(),
-  })
+  const [member, setMember] = useState<GuildMember>(initMember ?? emptyGuildMember)
 
   function handleChange<K extends keyof GuildMember>(key: K, value: GuildMember[K]) {
     setMember({...member, [key]: value})
@@ -38,7 +32,9 @@ function GuildMemberForm({initMember, onSubmit}: Props) {
   }
 
   function submit() {
-    if (guild) changeGuild({...guild, members: [...guild.members.filter(m => m.rbxName !== member.rbxName), member]})
+    const processedMember = member
+    processedMember.note = processedMember.note.trimEnd()
+    if (guild) changeGuild({...guild, members: [...guild.members.filter(m => m.rbxName !== member.rbxName), processedMember]})
     onSubmit(member)
   }
 
@@ -98,6 +94,13 @@ function GuildMemberForm({initMember, onSubmit}: Props) {
             />
           </Grid>
         </Grid>
+
+        <TextField
+          fullWidth multiline
+          label="Note"
+          value={member.note}
+          onChange={e => handleChange("note", e.target.value)}
+        />
 
         <Typography variant={'h6'} gutterBottom>Gem Checks</Typography>
 

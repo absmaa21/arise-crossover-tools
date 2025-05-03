@@ -103,6 +103,12 @@ function descendingComparator<T extends GuildMember>(a: T, b: T, orderBy: keyof 
     return 0
   }
 
+  if (typeof a[orderBy] === 'string' && typeof b[orderBy] === 'string') {
+    if (b[orderBy].toLowerCase() < a[orderBy].toLowerCase()) return -1
+    if (b[orderBy].toLowerCase() > a[orderBy].toLowerCase()) return 1
+    return 0
+  }
+
   if (b[orderBy] < a[orderBy]) return -1
   if (b[orderBy] > a[orderBy]) return 1
   return 0
