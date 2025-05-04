@@ -8,9 +8,9 @@ export function getFormattedNumber(num: number): string {
     .find(k => num / Potency[k as keyof typeof Potency] < 1000)
 
   if (potencyKey)
-    return (num / Potency[potencyKey as keyof typeof Potency]).toFixed(0) + ' ' + potencyKey
+    return (num / Potency[potencyKey as keyof typeof Potency]).toFixed(1) + ' ' + potencyKey
 
-  return (num / Potency.No).toFixed(0)
+  return (num / Potency.No).toFixed(1)
 }
 
 

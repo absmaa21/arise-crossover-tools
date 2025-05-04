@@ -182,14 +182,7 @@ function GuildMembers({members}: {members: GuildMember[]}) {
                     <TableCell component="th" id={labelId} scope="row" padding="none">{member.rbxName}</TableCell>
                     <TableCell align={'right'}>{member.displayName}</TableCell>
                     <TableCell align={'right'}>{member.discord}</TableCell>
-                    <TableCell align="right">
-                      {(() => {
-                        const sum = member.gemChecks.reduce((sum, gems) => sum + gems.value, 0);
-                        return member.gemChecks.length > 0
-                          ? `${getFormattedNumber(sum)}`
-                          : -1;
-                      })()}
-                    </TableCell>
+                    <TableCell align="right">{getFormattedNumber(member.gemChecks[member.gemChecks.length-1]?.value || -1)}</TableCell>
                     <TableCell align={'right'}>{formatDateToGerman(member.joinedAt)}</TableCell>
                   </TableRow>
                 )
