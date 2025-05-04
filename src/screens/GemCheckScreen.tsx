@@ -6,14 +6,9 @@ import ValueHandler from "../components/ValueHandler.tsx";
 import {useEffect, useState} from "react";
 import { Check } from "@mui/icons-material";
 
+function GemCheckScreen() {
 
-interface Props {
-  onFinish?: () => void,
-}
-
-function GemCheckScreen({onFinish}: Props) {
-
-  const {guild} = useGuild()
+  const {guild, changeGuild} = useGuild()
   const [filteredMembers, setFilteredMembers] = useState<GuildMember[]>([])
 
   function handleValueChange(rbxName: string, newValue: number) {
@@ -48,6 +43,10 @@ function GemCheckScreen({onFinish}: Props) {
           {`Gem Check for ${formatDateToGerman(Date.now())}`}
         </Typography>
 
+        {filteredMembers.length === 0 && <Typography variant={'h6'} component={'p'}>
+            Everyone done for today
+        </Typography>}
+
         {filteredMembers.sort((a, b) => -descendingComparator(a, b, 'prio')).slice(0, 5).map(m => (
           <Grid container spacing={2} mb={2}>
             <Grid size={6}>
@@ -60,7 +59,7 @@ function GemCheckScreen({onFinish}: Props) {
             <ValueHandler value={m.gemChecks[m.gemChecks.length-1].value} setValue={newValue => handleValueChange(m.rbxName, newValue)} valueSize={3} />
             <Grid size={1}>
               <IconButton
-                onClick={() => filteredMembers.length <= 0 && onFinish && onFinish()}
+                onClick={() => changeGuild({...guild, members: [...guild!.members.filter(mem => mem.rbxName !== m.rbxName), m]})}
                 sx={{ display: 'flex', alignItems: 'center', height: '100%', width: '100%' }}
               >
                 <Check/>

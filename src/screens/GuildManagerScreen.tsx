@@ -51,7 +51,7 @@ function GuildManagerScreen() {
       </Modal>
 
       <Modal open={gemCheck} onClose={() => setGemCheck(false)} sx={{ placeSelf: 'center' }}>
-        <GemCheckScreen onFinish={() => setGemCheck(false)}/>
+        <GemCheckScreen />
       </Modal>
     </Container>
   );
