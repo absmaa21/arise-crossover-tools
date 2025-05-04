@@ -8,7 +8,7 @@ const PageTransitionLayout = () => {
   const location = useLocation();
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', width: '100vw' }}>
       <PoweredByBanner/>
 
       <AnimatePresence mode="wait">
