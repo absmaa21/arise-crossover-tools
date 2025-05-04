@@ -50,8 +50,21 @@ function GuildProvider({children}: Props) {
     return value
   }
 
+  const addGemCheckForMember = (rbxName: string, gems: number, date: number = Date.now()) => {
+    if (!guild) return
+
+    const member = guild.members.find(m => m.rbxName === rbxName)
+    if (!member) {
+      console.log(`Member ${rbxName} not found!`)
+      return
+    }
+
+    member.gemChecks.push({value: gems, date})
+    changeGuild({...guild, members: [...guild.members.filter(m => m.rbxName !== rbxName), member]})
+  }
+
   return (
-    <GuildContext.Provider value={{guild, changeGuild, getCurHistoryValue}}>
+    <GuildContext.Provider value={{guild, changeGuild, getCurHistoryValue, addGemCheckForMember}}>
       {children}
     </GuildContext.Provider>
   );

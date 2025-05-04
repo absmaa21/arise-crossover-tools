@@ -13,6 +13,7 @@ type GuildContextProps = {
   guild?: Guild,
   changeGuild: (newGuild: Guild) => void,
   getCurHistoryValue: (history: {value: number, validFrom: number}[]) => number,
+  addGemCheckForMember: (rbxName: string, value: number, date: number) => void,
 }
 
 export const GuildContext = createContext<GuildContextProps | undefined>(undefined)

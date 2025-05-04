@@ -42,7 +42,13 @@ function GuildMemberForm({initMember, onSubmit}: Props) {
     <Container maxWidth={'sm'} sx={{width: '100vw', borderRadius: 1}}>
       <Paper elevation={3} sx={{textAlign: 'center', p: 2}}>
         <Grid container mb={2}>
-          <Grid size={1}/>
+          <Grid size={1}>
+            <TextField
+              required variant={'standard'}
+              value={member.prio}
+              onChange={e => handleChange('prio', parseInt(e.target.value) || 0)}
+            />
+          </Grid>
 
           <Grid size={10}>
             <Typography variant={'h5'}>
@@ -148,9 +154,7 @@ function GuildMemberForm({initMember, onSubmit}: Props) {
           </Grid>
         ))}
 
-        <Grid>
-          <Button onClick={() => handleChange('gemChecks', [...member.gemChecks, {value: 0, date: Date.now()}])}>Add Gem History</Button>
-        </Grid>
+        <Button onClick={() => handleChange('gemChecks', [...member.gemChecks, {value: 0, date: Date.now()}])}>Add Gem History</Button>
       </Paper>
     </Container>
   )

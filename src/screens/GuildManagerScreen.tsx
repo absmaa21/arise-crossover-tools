@@ -5,10 +5,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import {useState} from "react";
 import {Guild} from "../entities/guild.ts";
 import GuildMembers from "./GuildMembers.tsx";
+import GemCheckScreen from "./GemCheckScreen.tsx";
 
 function GuildManagerScreen() {
 
   const [editGuild, setEditGuild] = useState<boolean>(false)
+  const [gemCheck, setGemCheck] = useState<boolean>(false)
   const {guild, changeGuild} = useGuild()
 
   const submitEdit = (newGuild: Guild) => {
@@ -34,7 +36,7 @@ function GuildManagerScreen() {
       </Box>
 
       <Tooltip title={'Submit current gems for all members'} sx={{mb: 2, mt: 1}}>
-        <Button variant={'contained'}>
+        <Button variant={'contained'} onClick={() => setGemCheck(true)}>
           <Typography variant={'caption'}>
             gem check
           </Typography>
@@ -43,10 +45,13 @@ function GuildManagerScreen() {
 
       <GuildMembers members={guild.members}/>
 
-      <Modal open={editGuild} onClose={() => setEditGuild(false)}
-             sx={{placeSelf: 'center'}}
+      <Modal open={editGuild} onClose={() => setEditGuild(false)} sx={{placeSelf: 'center'}}
       >
         <GuildForm onSubmit={submitEdit} guild={guild}/>
+      </Modal>
+
+      <Modal open={gemCheck} onClose={() => setGemCheck(false)} sx={{ placeSelf: 'center' }}>
+        <GemCheckScreen onFinish={() => setGemCheck(false)}/>
       </Modal>
     </Container>
   );

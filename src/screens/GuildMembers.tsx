@@ -11,7 +11,7 @@ import {
   Typography
 } from "@mui/material";
 import {useMemo, useState} from "react";
-import {GuildMember} from "../entities/guild.ts";
+import {descendingComparator, GuildMember} from "../entities/guild.ts";
 import {Delete, FilterList } from "@mui/icons-material";
 import GuildMemberForm from "./GuildMemberForm.tsx";
 import {formatDateToGerman} from "../utils/germanDate.ts";
@@ -62,7 +62,7 @@ function TableToolbar({selected, onDelete}: {selected: readonly string[], onDele
 }
 
 
-const tableHeadCells: (keyof GuildMember)[] = ['rbxName', 'displayName', 'discord', 'gemChecks', 'joinedAt']
+const tableHeadCells: (keyof GuildMember)[] = ['prio', 'rbxName', 'displayName', 'discord', 'gemChecks', 'joinedAt']
 
 interface TableHeadProps {
   onRequestSort: (property: string) => void,
@@ -76,7 +76,7 @@ function EnhancedTableHead({onRequestSort, order, orderBy}: TableHeadProps) {
         {tableHeadCells.map((k, i) => (
           <TableCell
             key={k}
-            align={i === 0 ? 'left' : 'right'}
+            align={i <= 1 ? 'left' : 'right'}
             sortDirection={orderBy === k ? order : false}
           >
             <TableSortLabel
@@ -94,27 +94,6 @@ function EnhancedTableHead({onRequestSort, order, orderBy}: TableHeadProps) {
 }
 
 
-function descendingComparator<T extends GuildMember>(a: T, b: T, orderBy: keyof T) {
-  if (orderBy === 'gemChecks') {
-    const sumA = a.gemChecks.reduce((sum, gems) => sum + gems.value, 0)
-    const sumB = b.gemChecks.reduce((sum, gems) => sum + gems.value, 0)
-    if (sumB < sumA) return -1
-    if (sumB > sumA) return 1
-    return 0
-  }
-
-  if (typeof a[orderBy] === 'string' && typeof b[orderBy] === 'string') {
-    if (b[orderBy].toLowerCase() < a[orderBy].toLowerCase()) return -1
-    if (b[orderBy].toLowerCase() > a[orderBy].toLowerCase()) return 1
-    return 0
-  }
-
-  if (b[orderBy] < a[orderBy]) return -1
-  if (b[orderBy] > a[orderBy]) return 1
-  return 0
-}
-
-
 function GuildMembers({members}: {members: GuildMember[]}) {
 
   const {guild, changeGuild} = useGuild()
@@ -124,7 +103,7 @@ function GuildMembers({members}: {members: GuildMember[]}) {
   }
 
   const [order, setOrder] = useState<'asc' | 'desc'>('asc')
-  const [orderBy, setOrderBy] = useState<keyof GuildMember>('displayName')
+  const [orderBy, setOrderBy] = useState<keyof GuildMember>('prio')
   const [selected, setSelected] = useState<readonly string[]>([])
   const [page, setPage] = useState<number>(0)
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
@@ -193,12 +172,14 @@ function GuildMembers({members}: {members: GuildMember[]}) {
                     aria-checked={isSelected} sx={{cursor: 'pointer'}}
                     onDoubleClick={() => handleMemberClick(member)}
                   >
-                    <TableCell component="th" id={labelId} scope="row" padding="none">
+                    <TableCell padding={'checkbox'}>
                       <Checkbox color="primary" checked={isSelected} aria-labelledby={labelId}
                                 onClick={() => handleCheckboxClick(member.rbxName)}
-                                onDoubleClick={e => e.stopPropagation()}/>
-                      {member.rbxName}
+                                onDoubleClick={e => e.stopPropagation()}
+                                sx={{ m: 0 }}
+                      />
                     </TableCell>
+                    <TableCell component="th" id={labelId} scope="row" padding="none">{member.rbxName}</TableCell>
                     <TableCell align={'right'}>{member.displayName}</TableCell>
                     <TableCell align={'right'}>{member.discord}</TableCell>
                     <TableCell align="right">
