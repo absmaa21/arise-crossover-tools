@@ -25,7 +25,7 @@ function GuildManagerScreen() {
   )
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Box sx={{display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'center'}}>
         <Typography variant="h4" align="center">
           {guild.name}
