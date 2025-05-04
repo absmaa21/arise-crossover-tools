@@ -152,7 +152,7 @@ function GuildMembers({members}: {members: GuildMember[]}) {
   const emptyRows = page > 0 ? Math.max(0, (1+page) * rowsPerPage - members.length) : 0
 
   return (
-    <Container maxWidth={'md'}>
+    <Container maxWidth={'lg'}>
       <Paper sx={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <TableToolbar selected={selected} onDelete={deleteSelectedMembers}/>
         <TableContainer>
