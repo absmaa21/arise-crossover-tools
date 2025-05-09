@@ -18,6 +18,7 @@ import {formatDateToGerman} from "../utils/germanDate.ts";
 import {toHumanReadable} from "../utils/textFormatting.ts";
 import {getFormattedNumber} from "../utils/getFormattedNumber.ts";
 import {useGuild} from "../hooks/useGuild.ts";
+import {getMissingGems} from "../utils/memberCalcs.ts";
 
 
 function TableToolbar({selected, onDelete}: {selected: readonly string[], onDelete: () => void}) {
@@ -150,6 +151,7 @@ function GuildMembers({members}: {members: GuildMember[]}) {
   )
 
   const emptyRows = page > 0 ? Math.max(0, (1+page) * rowsPerPage - members.length) : 0
+  if (!guild) return null
 
   return (
     <Container maxWidth={'md'}>
@@ -166,25 +168,28 @@ function GuildMembers({members}: {members: GuildMember[]}) {
               {visibleRows.map((member, index) => {
                 const isSelected = selected.includes(member.rbxName)
                 const labelId = `enhanced-table-checkbox-${index}`
+                const missingGems = getMissingGems(guild, member)
                 return (
-                  <TableRow
-                    hover role="checkbox" key={member.rbxName} selected={isSelected} tabIndex={-1}
-                    aria-checked={isSelected} sx={{cursor: 'pointer'}}
-                    onDoubleClick={() => handleMemberClick(member)}
-                  >
-                    <TableCell padding={'checkbox'}>
-                      <Checkbox color="primary" checked={isSelected} aria-labelledby={labelId}
-                                onClick={() => handleCheckboxClick(member.rbxName)}
-                                onDoubleClick={e => e.stopPropagation()}
-                                sx={{ m: 0 }}
-                      />
-                    </TableCell>
-                    <TableCell component="th" id={labelId} scope="row" padding="none">{member.rbxName}</TableCell>
-                    <TableCell align={'right'}>{member.displayName}</TableCell>
-                    <TableCell align={'right'}>{member.discord}</TableCell>
-                    <TableCell align="right">{getFormattedNumber(member.gemChecks[member.gemChecks.length-1]?.value || -1)}</TableCell>
-                    <TableCell align={'right'}>{formatDateToGerman(member.joinedAt)}</TableCell>
-                  </TableRow>
+                  <Tooltip title={`Missing Gems: ${missingGems.curMissing} (${missingGems.overallNeeded})`}>
+                    <TableRow
+                      hover role="checkbox" key={member.rbxName} selected={isSelected} tabIndex={-1}
+                      aria-checked={isSelected} sx={{cursor: 'pointer'}}
+                      onDoubleClick={() => handleMemberClick(member)}
+                    >
+                      <TableCell padding={'checkbox'}>
+                        <Checkbox color="primary" checked={isSelected} aria-labelledby={labelId}
+                                  onClick={() => handleCheckboxClick(member.rbxName)}
+                                  onDoubleClick={e => e.stopPropagation()}
+                                  sx={{ m: 0 }}
+                        />
+                      </TableCell>
+                      <TableCell component="th" id={labelId} scope="row" padding="none">{member.rbxName}</TableCell>
+                      <TableCell align={'right'}>{member.displayName}</TableCell>
+                      <TableCell align={'right'}>{member.discord}</TableCell>
+                      <TableCell align="right">{getFormattedNumber(member.gemChecks[member.gemChecks.length-1]?.value || -1)}</TableCell>
+                      <TableCell align={'right'}>{formatDateToGerman(member.joinedAt)}</TableCell>
+                    </TableRow>
+                  </Tooltip>
                 )
               })}
 
