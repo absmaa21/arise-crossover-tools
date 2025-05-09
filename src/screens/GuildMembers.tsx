@@ -170,7 +170,7 @@ function GuildMembers({members}: {members: GuildMember[]}) {
                 const labelId = `enhanced-table-checkbox-${index}`
                 const missingGems = getMissingGems(guild, member)
                 return (
-                  <Tooltip title={`Missing Gems: ${missingGems.curMissing} (${missingGems.overallNeeded})`}>
+                  <Tooltip title={`Missing Gems: ${getFormattedNumber(missingGems.curMissing)} (${getFormattedNumber(missingGems.overallNeeded)})`}>
                     <TableRow
                       hover role="checkbox" key={member.rbxName} selected={isSelected} tabIndex={-1}
                       aria-checked={isSelected} sx={{cursor: 'pointer'}}
