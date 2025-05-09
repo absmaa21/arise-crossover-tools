@@ -28,7 +28,7 @@ export function getMissingGems(guild: Guild, member: GuildMember): getMissingGem
   }
 
   return {
-    curMissing: needed - (member.gemChecks[member.gemChecks.length-1]?.value || 0),
+    curMissing: Math.max(needed - (member.gemChecks[member.gemChecks.length-1]?.value || 0), 0),
     overallNeeded: needed,
   }
 }
