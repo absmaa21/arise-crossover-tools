@@ -5,7 +5,12 @@ import {viteCommonjs} from "@originjs/vite-plugin-commonjs";
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), viteCommonjs()],
-  server: {
+})
+
+/*
+DOES NOT WORK ON NETLIFY
+
+server: {
     proxy: {
       '/api': {
         target: 'https://35bb-2a00-79c0-646-5500-1ceb-f4ba-d85f-5466.ngrok-free.app',
@@ -17,4 +22,4 @@ export default defineConfig({
       }
     }
   }
-})
+ */

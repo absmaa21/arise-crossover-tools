@@ -3,6 +3,11 @@ import {ReactNode, useEffect, useState} from "react";
 import {emptyGuildMember, Guild} from "../entities/guild.ts";
 import axios, {isAxiosError} from "axios";
 
+const apiUrl: string = import.meta.env.VITE_API_SERVER
+const headers: Record<string, string> = {
+  'ngrok-skip-browser-warning': 'true',
+}
+
 interface Props {
   children: ReactNode,
 }
@@ -10,10 +15,10 @@ interface Props {
 function checkForMissingFields(guild: Guild): Guild {
   return {
     ...guild,
-    members: guild.members.map(m => ({
+    members: guild.members?.map(m => ({
       ...emptyGuildMember,
       ...m,
-    }))
+    })) || []
   }
 }
 
@@ -24,7 +29,8 @@ function GuildProvider({children}: Props) {
 
   const loadGuild = async () => {
     try {
-      const response = await axios.get<Guild>(`/api/load`)
+      const response = await axios.get<Guild>(`${apiUrl}/load`, {headers})
+      console.log(response)
       await changeGuild(response.data, true)
     } catch(e) {
       if (axios.isAxiosError(e)) {
@@ -42,8 +48,9 @@ function GuildProvider({children}: Props) {
 
   const refreshAuthorized = async () => {
     try {
-      const response = await axios.get(`/api/authorized`, {
+      const response = await axios.get(`${apiUrl}/authorized`, {
         params: {"password": localStorage.getItem('api-auth')},
+        headers
       })
       setIsAuthorized(response.status === 200)
     } catch {
@@ -58,8 +65,9 @@ function GuildProvider({children}: Props) {
 
     if (skipPost) return
     try {
-      const response = await axios.post(`/api/save`, newGuild, {
+      const response = await axios.post(`${apiUrl}/save`, newGuild, {
         params: {"password": localStorage.getItem('api-auth')},
+        headers
       })
       if (response.status === 200) console.log('Guild saved.')
       else if (response.status === 401) console.log('Not authorized')
