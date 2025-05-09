@@ -3,7 +3,7 @@ import {ReactNode, useEffect, useState} from "react";
 import {emptyGuildMember, Guild} from "../entities/guild.ts";
 import axios, {isAxiosError} from "axios";
 
-const apiUrl: string = import.meta.env.VITE_API_SERVER
+const apiUrl: string = 'https://f580-2a00-79c0-646-5500-1ceb-f4ba-d85f-5466.ngrok-free.app'
 const headers: Record<string, string> = {
   'ngrok-skip-browser-warning': 'true',
 }
