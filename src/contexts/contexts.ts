@@ -11,6 +11,7 @@ export const SettingsContext = createContext<SettingsContextProps | undefined>(u
 
 type GuildContextProps = {
   guild?: Guild,
+  isAuthorized: boolean,
   changeGuild: (newGuild: Guild) => void,
   getCurHistoryValue: (history: {value: number, validFrom: number}[]) => number,
 }

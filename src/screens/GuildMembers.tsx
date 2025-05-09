@@ -97,7 +97,7 @@ function EnhancedTableHead({onRequestSort, order, orderBy}: TableHeadProps) {
 
 function GuildMembers({members}: {members: GuildMember[]}) {
 
-  const {guild, changeGuild} = useGuild()
+  const {guild, isAuthorized, changeGuild} = useGuild()
   const [dense, setDense] = useState<boolean>(false)
   function toggleDense() {
     setDense(!dense)
@@ -125,6 +125,7 @@ function GuildMembers({members}: {members: GuildMember[]}) {
   }
 
   function handleMemberClick(member: GuildMember) {
+    if (!isAuthorized) return
     setMemberToEdit(member)
     setMemberFormOpen(true)
   }
@@ -170,9 +171,12 @@ function GuildMembers({members}: {members: GuildMember[]}) {
                 const labelId = `enhanced-table-checkbox-${index}`
                 const missingGems = getMissingGems(guild, member)
                 return (
-                  <Tooltip title={`Missing Gems: ${getFormattedNumber(missingGems.curMissing)} (${getFormattedNumber(missingGems.overallNeeded)})`}>
+                  <Tooltip
+                    key={member.rbxName}
+                    title={`Missing Gems: ${getFormattedNumber(missingGems.curMissing)} (${getFormattedNumber(missingGems.overallNeeded)})`}
+                  >
                     <TableRow
-                      hover role="checkbox" key={member.rbxName} selected={isSelected} tabIndex={-1}
+                      hover role="checkbox" selected={isSelected} tabIndex={-1}
                       aria-checked={isSelected} sx={{cursor: 'pointer'}}
                       onDoubleClick={() => handleMemberClick(member)}
                     >
@@ -180,7 +184,7 @@ function GuildMembers({members}: {members: GuildMember[]}) {
                         <Checkbox color="primary" checked={isSelected} aria-labelledby={labelId}
                                   onClick={() => handleCheckboxClick(member.rbxName)}
                                   onDoubleClick={e => e.stopPropagation()}
-                                  sx={{ m: 0 }}
+                                  sx={{ m: 0 }} disabled={!isAuthorized}
                         />
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row" padding="none">{member.rbxName}</TableCell>
@@ -199,11 +203,11 @@ function GuildMembers({members}: {members: GuildMember[]}) {
                 </TableRow>
               )}
 
-              <TableRow>
-                <TableCell colSpan={tableHeadCells.length} sx={{p: dense ? .2 : 1}}>
-                  <Button fullWidth onClick={() => setMemberFormOpen(true)}>Add Member</Button>
-                </TableCell>
-              </TableRow>
+              {isAuthorized && <TableRow>
+                  <TableCell colSpan={tableHeadCells.length} sx={{p: dense ? .2 : 1}}>
+                      <Button fullWidth onClick={() => setMemberFormOpen(true)}>Add Member</Button>
+                  </TableCell>
+              </TableRow>}
             </TableBody>
           </Table>
         </TableContainer>

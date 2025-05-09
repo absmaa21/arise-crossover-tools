@@ -1,8 +1,7 @@
 import {GuildContext} from "./contexts.ts";
 import {ReactNode, useEffect, useState} from "react";
 import {emptyGuildMember, Guild} from "../entities/guild.ts";
-import axios from "axios";
-import {useNotifications} from "@toolpad/core";
+import axios, {isAxiosError} from "axios";
 
 interface Props {
   children: ReactNode,
@@ -20,27 +19,57 @@ function checkForMissingFields(guild: Guild): Guild {
 
 function GuildProvider({children}: Props) {
 
-  const notify = useNotifications()
   const [guild, setGuild] = useState<Guild | undefined>()
-
-  useEffect(() => {
-    loadGuild().then(() => console.log('Guild loaded'))
-  }, []);
+  const [isAuthorized, setIsAuthorized] = useState<boolean>(false)
 
   const loadGuild = async () => {
-    const response = await axios.get<Guild>('rent-catalyst.gl.at.ply.gg:17625/load')
-    if (axios.isAxiosError(response)) {
-      console.log('Loading guild was invalid! ', response.data)
-      return
+    try {
+      const response = await axios.get<Guild>(`/api/load`)
+      await changeGuild(response.data, true)
+    } catch(e) {
+      if (axios.isAxiosError(e)) {
+        console.log('Loading guild was invalid! ', e.response?.data || '');
+      } else {
+        console.error('Something else went wrong while loading guild. ', e);
+      }
     }
-    setGuild(response.data)
-    notify.show('Guild loaded.', {autoHideDuration: 1000, severity: 'success'})
   }
 
-  const changeGuild = (newGuild: Guild) => {
+  useEffect(() => {
+    loadGuild()
+    refreshAuthorized()
+  }, []);
+
+  const refreshAuthorized = async () => {
+    try {
+      const response = await axios.get(`/api/authorized`, {
+        params: {"password": localStorage.getItem('api-auth')},
+      })
+      setIsAuthorized(response.status === 200)
+    } catch {
+      setIsAuthorized(false)
+    }
+  }
+
+  const changeGuild = async (newGuild: Guild, skipPost: boolean = false) => {
     newGuild = checkForMissingFields(newGuild)
     localStorage.setItem('guild', JSON.stringify(newGuild))
     setGuild(newGuild)
+
+    if (skipPost) return
+    try {
+      const response = await axios.post(`/api/save`, newGuild, {
+        params: {"password": localStorage.getItem('api-auth')},
+      })
+      if (response.status === 200) console.log('Guild saved.')
+      else if (response.status === 401) console.log('Not authorized')
+    } catch (e) {
+      if (isAxiosError(e)) {
+        console.log('Error while saving guild. ', e)
+      } else {
+        console.error('Something else went wrong while saving guild. ', e)
+      }
+    }
   }
 
   const getCurHistoryValue = (history: {value: number, validFrom: number}[]): number => {
@@ -59,7 +88,7 @@ function GuildProvider({children}: Props) {
   }
 
   return (
-    <GuildContext.Provider value={{guild, changeGuild, getCurHistoryValue}}>
+    <GuildContext.Provider value={{guild, isAuthorized, changeGuild, getCurHistoryValue}}>
       {children}
     </GuildContext.Provider>
   );

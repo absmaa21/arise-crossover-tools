@@ -48,7 +48,7 @@ function GemCheckScreen() {
         </Typography>}
 
         {filteredMembers.sort((a, b) => -descendingComparator(a, b, 'prio')).slice(0, 5).map(m => (
-          <Grid container spacing={2} mb={2}>
+          <Grid container spacing={2} mb={2} key={m.rbxName}>
             <Grid size={6}>
               <TextField
                 disabled fullWidth
