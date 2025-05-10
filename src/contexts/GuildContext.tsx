@@ -32,6 +32,10 @@ function GuildProvider({children}: Props) {
     if (rawValidUntil) {
       if (Date.now() < parseInt(rawValidUntil)) {
         console.log('Guild is still valid.')
+        const loadedGuild = localStorage.getItem('guild')
+        if (loadedGuild) {
+          await changeGuild(JSON.parse(loadedGuild), true)
+        }
         return
       }
     }
