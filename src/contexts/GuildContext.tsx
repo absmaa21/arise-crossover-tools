@@ -28,9 +28,18 @@ function GuildProvider({children}: Props) {
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false)
 
   const loadGuild = async () => {
+    const rawValidUntil = localStorage.getItem('guild-valid-until')
+    if (rawValidUntil) {
+      if (Date.now() < parseInt(rawValidUntil)) {
+        console.log('Guild is still valid.')
+        return
+      }
+    }
+
     try {
       const response = await axios.get<Guild>(`${apiUrl}/load`, {headers})
-      console.log(response)
+      console.log('Loaded Guild: ', response.data.name)
+      localStorage.setItem('guild-valid-until', String(Date.now() + 5 * 60 * 1000))
       await changeGuild(response.data, true)
     } catch(e) {
       if (axios.isAxiosError(e)) {
@@ -47,13 +56,25 @@ function GuildProvider({children}: Props) {
   }, []);
 
   const refreshAuthorized = async () => {
+    const password = localStorage.getItem('api-auth')
+    if (!password || password.length < 64) {
+      localStorage.removeItem('api-auth')
+      return
+    }
+
     try {
       const response = await axios.get(`${apiUrl}/authorized`, {
-        params: {"password": localStorage.getItem('api-auth')},
+        params: {password},
         headers
       })
-      setIsAuthorized(response.status === 200)
+      if (response.status === 200) {
+        setIsAuthorized(true)
+      } else {
+        localStorage.removeItem('api-auth')
+        setIsAuthorized(false)
+      }
     } catch {
+      localStorage.removeItem('api-auth')
       setIsAuthorized(false)
     }
   }
