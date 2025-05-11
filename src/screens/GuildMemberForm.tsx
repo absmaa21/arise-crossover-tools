@@ -96,7 +96,7 @@ function GuildMemberForm({initMember, onSubmit}: Props) {
         <Grid container spacing={2} mb={2}>
           <Grid size={6}>
             <TextField
-              fullWidth required
+              fullWidth required type={'number'}
               label="Discord Id"
               value={member.discord.id}
               onChange={e => handleDiscordChange("id", parseInt(e.target.value))}
