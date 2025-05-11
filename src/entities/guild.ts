@@ -15,7 +15,11 @@ export interface Guild {
 export interface GuildMember {
   rbxName: string,
   displayName: string,
-  discord: string,
+  discord: {
+    id: number,
+    display: string,
+    lastUpdate: number,
+  },
   joinedAt: number,
   gemChecks: {
     value: number,
@@ -28,7 +32,11 @@ export interface GuildMember {
 export const emptyGuildMember: GuildMember = {
   rbxName: '',
   displayName: '',
-  discord: '',
+  discord: {
+    id: 0,
+    display: '',
+    lastUpdate: 0,
+  },
   joinedAt: Date.now(),
   gemChecks: [],
   note: '',

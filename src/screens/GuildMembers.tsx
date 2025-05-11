@@ -189,7 +189,7 @@ function GuildMembers({members}: {members: GuildMember[]}) {
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row" padding="none">{member.rbxName}</TableCell>
                       <TableCell align={'right'}>{member.displayName}</TableCell>
-                      <TableCell align={'right'}>{member.discord}</TableCell>
+                      <TableCell align={'right'}>{member.discord.display || member.discord.id}</TableCell>
                       <TableCell align="right">{getFormattedNumber(member.gemChecks[member.gemChecks.length-1]?.value || -1)}</TableCell>
                       <TableCell align={'right'}>{formatDateToGerman(member.joinedAt)}</TableCell>
                     </TableRow>

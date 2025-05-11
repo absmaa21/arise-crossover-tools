@@ -30,6 +30,17 @@ function GuildMemberForm({initMember, onSubmit}: Props) {
       )
     }))
   }
+  
+  function handleDiscordChange(key: 'id' | 'display', value: string | number) {
+    setMember(p => ({
+      ...p,
+      discord: {
+        id: key === 'id' && typeof value === 'number' ? value : p.discord.id,
+        display: key === 'display' && typeof value === 'string' ? value : p.discord.display,
+        lastUpdate: Date.now(),
+      }
+    }))
+  }
 
   function submit() {
     const processedMember = member
@@ -86,9 +97,9 @@ function GuildMemberForm({initMember, onSubmit}: Props) {
           <Grid size={6}>
             <TextField
               fullWidth required
-              label="Discord Name"
-              value={member.discord}
-              onChange={e => handleChange("discord", e.target.value)}
+              label="Discord Id"
+              value={member.discord.id}
+              onChange={e => handleDiscordChange("id", parseInt(e.target.value))}
             />
           </Grid>
           <Grid size={6}>

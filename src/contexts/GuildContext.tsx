@@ -15,10 +15,18 @@ interface Props {
 function checkForMissingFields(guild: Guild): Guild {
   return {
     ...guild,
-    members: guild.members?.map(m => ({
-      ...emptyGuildMember,
-      ...m,
-    })) || []
+    members: guild.members?.map(m => {
+      return {
+        ...emptyGuildMember,
+        ...m,
+        discord: {
+          ...emptyGuildMember.discord,
+          ...(typeof m['discord'] === 'string' ? {
+            display: m.discord,
+          } : m.discord)
+        }
+      }
+    }) || []
   }
 }
 
