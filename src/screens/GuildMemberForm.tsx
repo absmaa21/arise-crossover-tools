@@ -31,12 +31,12 @@ function GuildMemberForm({initMember, onSubmit}: Props) {
     }))
   }
   
-  function handleDiscordChange(key: 'id' | 'display', value: string | number) {
+  function handleDiscordChange(key: 'id' | 'display', value: string) {
     setMember(p => ({
       ...p,
       discord: {
-        id: key === 'id' && typeof value === 'number' ? value : p.discord.id,
-        display: key === 'display' && typeof value === 'string' ? value : p.discord.display,
+        id: key === 'id' ? value : p.discord.id,
+        display: key === 'display' ? value : p.discord.display,
         lastUpdate: Date.now(),
       }
     }))
@@ -99,7 +99,8 @@ function GuildMemberForm({initMember, onSubmit}: Props) {
               fullWidth required type={'number'}
               label="Discord Id"
               value={member.discord.id}
-              onChange={e => handleDiscordChange("id", parseInt(e.target.value))}
+              onChange={e => handleDiscordChange("id", e.target.value)}
+              inputMode={'numeric'}
             />
           </Grid>
           <Grid size={6}>

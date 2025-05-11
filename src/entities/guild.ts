@@ -16,7 +16,7 @@ export interface GuildMember {
   rbxName: string,
   displayName: string,
   discord: {
-    id: number,
+    id: string,
     display: string,
     lastUpdate: number,
   },
@@ -33,7 +33,7 @@ export const emptyGuildMember: GuildMember = {
   rbxName: '',
   displayName: '',
   discord: {
-    id: 0,
+    id: '',
     display: '',
     lastUpdate: 0,
   },
