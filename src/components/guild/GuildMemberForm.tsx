@@ -1,11 +1,11 @@
-import {emptyGuildMember, GuildMember} from "../entities/guild.ts";
+import {emptyGuildMember, GuildMember} from "../../entities/guild.ts";
 import {useState} from "react";
 import {Button, Container, Grid, IconButton, MenuItem, Paper, TextField, Typography} from "@mui/material";
 import {Delete, Save} from "@mui/icons-material";
-import {useGuild} from "../hooks/useGuild.ts";
-import {formatDateToGerman, parseGermanDate} from "../utils/germanDate.ts";
-import {getFormattedNumber, getHighestPotency} from "../utils/getFormattedNumber.ts";
-import {ITER_POTENCY, Potency} from "../entities/potency.ts";
+import {useGuild} from "../../hooks/useGuild.ts";
+import {formatDateToGerman, parseGermanDate} from "../../utils/germanDate.ts";
+import {getFormattedNumber, getHighestPotency} from "../../utils/getFormattedNumber.ts";
+import {ITER_POTENCY, Potency} from "../../entities/potency.ts";
 
 
 interface Props {

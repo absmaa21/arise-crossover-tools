@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {ITER_POTENCY, Potency} from "../entities/potency.ts";
+import {ITER_POTENCY, Potency} from "../../entities/potency.ts";
 import {Container, Grid, IconButton, MenuItem, Paper, TextField, Tooltip, Typography, Box} from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CheckIcon from "@mui/icons-material/Check"

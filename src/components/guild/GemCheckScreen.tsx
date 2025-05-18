@@ -1,11 +1,11 @@
-import {useGuild} from "../hooks/useGuild.ts";
+import {useGuild} from "../../hooks/useGuild.ts";
 import {Container, Grid, IconButton, Paper, TextField, Typography} from "@mui/material";
-import {formatDateToGerman} from "../utils/germanDate.ts";
-import {descendingComparator, GuildMember} from "../entities/guild.ts";
-import ValueHandler from "../components/ValueHandler.tsx";
+import {formatDateToGerman} from "../../utils/germanDate.ts";
+import {descendingComparator, GuildMember} from "../../entities/guild.ts";
+import ValueHandler from "../ValueHandler.tsx";
 import {useEffect, useState} from "react";
 import {Check} from "@mui/icons-material";
-import MemberSearch from "../components/MemberSearch.tsx";
+import MemberSearch from "../MemberSearch.tsx";
 
 function GemCheckScreen() {
 

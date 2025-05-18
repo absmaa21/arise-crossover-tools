@@ -13,7 +13,7 @@ import {
 import React, {SetStateAction, useMemo, useState} from "react";
 import {descendingComparator, GuildMember} from "../entities/guild.ts";
 import {Delete, FilterList} from "@mui/icons-material";
-import GuildMemberForm from "./GuildMemberForm.tsx";
+import GuildMemberForm from "../components/guild/GuildMemberForm.tsx";
 import {formatDateToGerman} from "../utils/germanDate.ts";
 import {toHumanReadable} from "../utils/textFormatting.ts";
 import {getFormattedNumber} from "../utils/getFormattedNumber.ts";

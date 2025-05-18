@@ -1,26 +1,25 @@
-import {useEffect, useState} from "react"
+import {useCallback, useEffect, useState} from "react"
 import {Card, CardContent, Container, Grid, MenuItem, TextField, Typography} from "@mui/material";
 import {Rank} from "../entities/rank.ts";
-import {Potency} from "../entities/potency.ts";
 import {getFormattedNumber} from "../utils/getFormattedNumber.ts";
+import ValueHandler from "../components/ValueHandler.tsx";
+import {Potency} from "../entities/potency.ts";
 
 const RANKS: string[] = Object.keys(Rank).filter((key) => Rank[key as keyof typeof Rank] <= Rank.SS)
-const NUMBER_PREFIX: string[] = Object.keys(Potency).filter((key) => isNaN(Number(key)))
 
 
 function WeaponCalculatorScreen() {
   const [swords, setSwords] = useState<Record<string, number>>({});
   const [targetRank, setTargetRank] = useState<Rank>(Rank.SS);
   const [result, setResult] = useState<string | null>(null);
-  const [price, setPrice] = useState<number>(5.20)
-  const [pricePotency, setPricePotency] = useState<Potency>(Potency.Qi)
+  const [price, setPrice] = useState<number>(30.42 * Potency.Sx)
 
   const handleSwordChange = (rank: string, value: string) => {
     const new_num = parseInt(value, 10) || 0
     setSwords({ ...swords, [rank]: new_num });
   };
 
-  const calculate = () => {
+  const calculate = useCallback(() => {
     if (targetRank <= Rank.E) {
       setResult('Target must be higher then Rank E.');
       return;
@@ -51,12 +50,10 @@ function WeaponCalculatorScreen() {
     }
 
     missing -= swords[Object.values(Rank)[Rank.E]] || 0
-    setResult(`Missing E Swords: ${missing}\nCosts: ${getFormattedNumber(missing * price * pricePotency)}`);
-  };
+    setResult(`Missing E Swords: ${missing}\nCosts: ${getFormattedNumber(missing * price)}`);
+  }, [price, swords, targetRank])
 
-  useEffect(() => {
-    calculate()
-  }, [swords, price, targetRank, pricePotency]);
+  useEffect(calculate, [calculate]);
 
   return (
     <Container maxWidth="xs">
@@ -92,29 +89,9 @@ function WeaponCalculatorScreen() {
             ))}
           </TextField>
         </Grid>
-        <Grid size={{ sm: 1 }} sx={{ display: { xs: 'none', sm: 'block' } }}/>
-        <Grid size={{ xs: 8, sm: 4 }}>
-          <TextField
-            type={"number"}
-            fullWidth
-            label={"Sword Price"}
-            value={price}
-            onChange={(e) => setPrice(Number.parseFloat(e.target.value))}
-          />
-        </Grid>
-        <Grid size={{ xs: 4, sm: 3 }} >
-          <TextField
-            select
-            label="Potency"
-            fullWidth
-            value={pricePotency}
-            onChange={(e) => setPricePotency(Number(e.target.value))}
-          >
-            {NUMBER_PREFIX.map((pot) => (
-              <MenuItem key={pot} value={Potency[pot as keyof typeof Potency]}>{pot}</MenuItem>
-            ))}
-          </TextField>
-        </Grid>
+
+        <ValueHandler value={price} setValue={setPrice} valueLabel={'Sword Price'}
+                      valueSize={5} potencySize={3} storeKey={'sword-price'} />
       </Grid>
 
       {result && (

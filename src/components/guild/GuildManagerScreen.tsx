@@ -1,10 +1,10 @@
-import {useGuild} from "../hooks/useGuild.ts";
+import {useGuild} from "../../hooks/useGuild.ts";
 import {Box, Button, Container, IconButton, Modal, Tooltip, Typography} from "@mui/material";
 import GuildForm from "./GuildForm.tsx";
 import EditIcon from '@mui/icons-material/Edit';
 import {useState} from "react";
-import {Guild} from "../entities/guild.ts";
-import GuildMembers from "./GuildMembers.tsx";
+import {Guild} from "../../entities/guild.ts";
+import GuildMembers from "../../screens/GuildMembers.tsx";
 import GemCheckScreen from "./GemCheckScreen.tsx";
 
 function GuildManagerScreen() {

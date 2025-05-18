@@ -1,40 +1,20 @@
 import {Potency} from "../entities/potency.ts";
 
-export function getFormattedNumber(num: number): string {
-  if (num < Potency.k) return num.toFixed(0)
+const numFormatFraction = Intl.NumberFormat('us', {minimumFractionDigits: 2, maximumFractionDigits: 2})
+const numberFormat = Intl.NumberFormat('us')
+
+export function getFormattedNumber(num: number, ignoreSuffix: boolean = false): string {
+  if (num < Potency.k) return num.toFixed(2)
 
   const potencyKey = Object.keys(Potency)
     .filter(key => isNaN(Number(key)))
     .find(k => num / Potency[k as keyof typeof Potency] < 1000)
 
   if (potencyKey)
-    return (num / Potency[potencyKey as keyof typeof Potency]).toFixed(1) + ' ' + potencyKey
+    return numFormatFraction.format(num / Potency[potencyKey as keyof typeof Potency]) + (ignoreSuffix ? '' : ' ' + potencyKey)
 
-  return (num / Potency.No).toFixed(1)
+  return numberFormat.format(num / Potency.Dc) + (ignoreSuffix ? '' : ' Dc')
 }
-
-
-/**
- * Not working!!!
- * @param str
- */
-export function getRawNumber(str: string): number {
-  const match = str.match('(^d+)(.*)')
-  if (!match) {
-    console.log(`getRawNumber: no match found`)
-    return 0
-  }
-
-  const num = parseFloat(match[1]) || 0
-  const suffix = match[2].trim().toLowerCase()
-
-  const foundSuffix = Object.keys(Potency).find(p => p.toLowerCase() === suffix)
-  if (!foundSuffix) return 0
-
-  const multiplier = Potency[foundSuffix as keyof typeof Potency] ?? 0
-  return num * multiplier
-}
-
 
 export function getHighestPotency(num: number): Potency {
   if (num < 1000) return Potency.None

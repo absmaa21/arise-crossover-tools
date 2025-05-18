@@ -14,11 +14,11 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Guild } from "../entities/guild.ts";
-import {getFormattedNumber, getHighestPotency} from "../utils/getFormattedNumber.ts";
-import {ITER_POTENCY, Potency} from "../entities/potency.ts";
-import {formatDateToGerman, parseGermanDate} from "../utils/germanDate.ts";
-import {loadJsonFile, saveAsJson} from "../utils/computerSaveLoad.ts";
+import { Guild } from "../../entities/guild.ts";
+import {getFormattedNumber, getHighestPotency} from "../../utils/getFormattedNumber.ts";
+import {ITER_POTENCY, Potency} from "../../entities/potency.ts";
+import {formatDateToGerman, parseGermanDate} from "../../utils/germanDate.ts";
+import {loadJsonFile, saveAsJson} from "../../utils/computerSaveLoad.ts";
 import {useNotifications} from "@toolpad/core";
 
 interface Props {
