@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import {getFormattedNumber, getHighestPotency} from "../utils/getFormattedNumber.ts";
 import {ITER_POTENCY, Potency} from "../entities/potency.ts";
-import {useEffect, useRef, useState} from "react";
+import {useRef, useState} from "react";
 import {Replay, Save} from "@mui/icons-material";
 
 interface Props {
