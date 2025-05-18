@@ -10,18 +10,25 @@ import {
   Tooltip,
   Typography
 } from "@mui/material";
-import {useMemo, useState} from "react";
+import React, {SetStateAction, useMemo, useState} from "react";
 import {descendingComparator, GuildMember} from "../entities/guild.ts";
-import {Delete, FilterList } from "@mui/icons-material";
+import {Delete, FilterList} from "@mui/icons-material";
 import GuildMemberForm from "./GuildMemberForm.tsx";
 import {formatDateToGerman} from "../utils/germanDate.ts";
 import {toHumanReadable} from "../utils/textFormatting.ts";
 import {getFormattedNumber} from "../utils/getFormattedNumber.ts";
 import {useGuild} from "../hooks/useGuild.ts";
 import {getMissingGems} from "../utils/memberCalcs.ts";
+import MemberSearch from "../components/MemberSearch.tsx";
 
 
-function TableToolbar({selected, onDelete}: {selected: readonly string[], onDelete: () => void}) {
+interface TableToolbarProps {
+  selected: readonly string[],
+  onDelete: () => void,
+  setSearchedMembers: React.Dispatch<SetStateAction<GuildMember[] | null>>
+}
+
+function TableToolbar({selected, onDelete, setSearchedMembers}: TableToolbarProps) {
   return (
     <Toolbar sx={[
       {
@@ -46,12 +53,7 @@ function TableToolbar({selected, onDelete}: {selected: readonly string[], onDele
           </IconButton>
         </Tooltip>
       </> : <>
-        <Typography
-          variant="h6"
-          id="tableTitle"
-        >
-          Members
-        </Typography>
+        <MemberSearch setFoundMembers={setSearchedMembers}/>
         <Tooltip title={"Filter below gem check"}>
           <IconButton>
             <FilterList/>
@@ -70,6 +72,7 @@ interface TableHeadProps {
   order: 'asc' | 'desc',
   orderBy: keyof GuildMember,
 }
+
 function EnhancedTableHead({onRequestSort, order, orderBy}: TableHeadProps) {
   return (
     <TableHead>
@@ -95,10 +98,11 @@ function EnhancedTableHead({onRequestSort, order, orderBy}: TableHeadProps) {
 }
 
 
-function GuildMembers({members}: {members: GuildMember[]}) {
+function GuildMembers({members}: { members: GuildMember[] }) {
 
   const {guild, isAuthorized, changeGuild} = useGuild()
   const [dense, setDense] = useState<boolean>(false)
+
   function toggleDense() {
     setDense(!dense)
   }
@@ -110,6 +114,7 @@ function GuildMembers({members}: {members: GuildMember[]}) {
   const [rowsPerPage, setRowsPerPage] = useState<number>(5)
   const [memberFormOpen, setMemberFormOpen] = useState<boolean>(false)
   const [memberToEdit, setMemberToEdit] = useState<GuildMember>()
+  const [searchedMembers, setSearchedMembers] = useState<GuildMember[] | null>(null)
 
   function handleRequestSort(property: string) {
     const isAsc = orderBy === property && order === 'asc'
@@ -145,19 +150,23 @@ function GuildMembers({members}: {members: GuildMember[]}) {
   }
 
   const visibleRows = useMemo(() =>
-    [...members]
-      .sort((a, b) => order === 'desc' ? descendingComparator(a, b, orderBy) : -descendingComparator(a, b, orderBy))
-      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [members, order, orderBy, page, rowsPerPage]
+      [...members]
+        .filter(m => {
+          if (!searchedMembers) return true
+          return searchedMembers.find(f => f.rbxName === m.rbxName)
+        })
+        .sort((a, b) => order === 'desc' ? descendingComparator(a, b, orderBy) : -descendingComparator(a, b, orderBy))
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
+    [members, order, orderBy, page, rowsPerPage, searchedMembers]
   )
 
-  const emptyRows = page > 0 ? Math.max(0, (1+page) * rowsPerPage - members.length) : 0
+  const emptyRows = rowsPerPage - visibleRows.length
   if (!guild) return null
 
   return (
     <Container maxWidth={'md'}>
-      <Paper sx={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        <TableToolbar selected={selected} onDelete={deleteSelectedMembers}/>
+      <Paper sx={{display: 'flex', flexDirection: 'column', overflow: 'hidden'}}>
+        <TableToolbar selected={selected} onDelete={deleteSelectedMembers} setSearchedMembers={setSearchedMembers}/>
         <TableContainer>
           <Table aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
             <EnhancedTableHead
@@ -184,13 +193,14 @@ function GuildMembers({members}: {members: GuildMember[]}) {
                         <Checkbox color="primary" checked={isSelected} aria-labelledby={labelId}
                                   onClick={() => handleCheckboxClick(member.rbxName)}
                                   onDoubleClick={e => e.stopPropagation()}
-                                  sx={{ m: 0 }} disabled={!isAuthorized}
+                                  sx={{m: 0}} disabled={!isAuthorized}
                         />
                       </TableCell>
                       <TableCell component="th" id={labelId} scope="row" padding="none">{member.rbxName}</TableCell>
                       <TableCell align={'right'}>{member.displayName}</TableCell>
                       <TableCell align={'right'}>{member.discord.display || member.discord.id}</TableCell>
-                      <TableCell align="right">{getFormattedNumber(member.gemChecks[member.gemChecks.length-1]?.value || -1)}</TableCell>
+                      <TableCell
+                        align="right">{getFormattedNumber(member.gemChecks[member.gemChecks.length - 1]?.value || -1)}</TableCell>
                       <TableCell align={'right'}>{formatDateToGerman(member.joinedAt)}</TableCell>
                     </TableRow>
                   </Tooltip>
@@ -212,14 +222,14 @@ function GuildMembers({members}: {members: GuildMember[]}) {
           </Table>
         </TableContainer>
 
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} onClick={toggleDense}>
+        <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+          <Box sx={{display: 'flex', alignItems: 'center', cursor: 'pointer'}} onClick={toggleDense}>
             <Checkbox checked={dense}/>
             <Typography variant={'subtitle2'}>Compact</Typography>
           </Box>
           <TablePagination
             rowsPerPageOptions={[5, 10, 15, 20, 25]} component="div"
-            count={members.length} rowsPerPage={rowsPerPage} page={page}
+            count={searchedMembers?.length ?? members.length} rowsPerPage={rowsPerPage} page={page}
             onPageChange={(_, p) => setPage(p)}
             onRowsPerPageChange={e => {
               setRowsPerPage(parseInt(e.target.value, 10))

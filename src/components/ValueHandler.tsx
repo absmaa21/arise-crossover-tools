@@ -24,7 +24,7 @@ function ValueHandler({value, setValue, valueSize = 2, potencySize = 2, valueLab
       </Grid>
       <Grid size={potencySize}>
         <TextField
-          select
+          select sx={{minWidth: 86}}
           label="Potency"
           fullWidth
           value={getHighestPotency(value)}

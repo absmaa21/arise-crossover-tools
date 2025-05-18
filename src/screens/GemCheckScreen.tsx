@@ -4,12 +4,14 @@ import {formatDateToGerman} from "../utils/germanDate.ts";
 import {descendingComparator, GuildMember} from "../entities/guild.ts";
 import ValueHandler from "../components/ValueHandler.tsx";
 import {useEffect, useState} from "react";
-import { Check } from "@mui/icons-material";
+import {Check} from "@mui/icons-material";
+import MemberSearch from "../components/MemberSearch.tsx";
 
 function GemCheckScreen() {
 
   const {guild, changeGuild} = useGuild()
   const [filteredMembers, setFilteredMembers] = useState<GuildMember[]>([])
+  const [searchedMembers, setSearchedMembers] = useState<GuildMember[] | null>(null)
 
   function handleValueChange(rbxName: string, newValue: number) {
     const changedMember = filteredMembers.find(m => m.rbxName === rbxName)
@@ -18,7 +20,7 @@ function GemCheckScreen() {
       return
     }
 
-    changedMember.gemChecks[changedMember.gemChecks.length-1].value = newValue
+    changedMember.gemChecks[changedMember.gemChecks.length - 1].value = newValue
     setFilteredMembers([...filteredMembers.filter(m => m.rbxName !== rbxName), changedMember])
   }
 
@@ -26,8 +28,12 @@ function GemCheckScreen() {
     if (!guild) return
     setFilteredMembers(
       guild.members
-      .filter(m => m.gemChecks.length === 0 || formatDateToGerman(m.gemChecks[m.gemChecks.length-1].date) !== formatDateToGerman(Date.now()))
-      .map(m => ({...m, gemChecks: [...m.gemChecks, {value: m.gemChecks[m.gemChecks.length-1]?.value || 0, date: Date.now()}]}))
+        .filter(m => m.gemChecks.length === 0 || formatDateToGerman(m.gemChecks[m.gemChecks.length - 1].date) !== formatDateToGerman(Date.now()))
+        .map(m => ({
+          ...m,
+          gemChecks: [...m.gemChecks, {value: m.gemChecks[m.gemChecks.length - 1]?.value || 0, date: Date.now()}]
+        }))
+        .sort()
     )
   }, [guild]);
 
@@ -43,30 +49,46 @@ function GemCheckScreen() {
           {`Gem Check for ${formatDateToGerman(Date.now())}`}
         </Typography>
 
+        <MemberSearch setFoundMembers={setSearchedMembers}/>
+
         {filteredMembers.length === 0 && <Typography variant={'h6'} component={'p'}>
             Everyone done for today
         </Typography>}
 
-        {filteredMembers.sort((a, b) => -descendingComparator(a, b, 'prio')).slice(0, 5).map(m => (
-          <Grid container spacing={2} mb={2} key={m.rbxName}>
-            <Grid size={6}>
-              <TextField
-                disabled fullWidth
-                label={'Roblox Name'}
-                value={m.rbxName}
-              />
+        {filteredMembers
+          .filter(m => {
+            if (!searchedMembers) return true
+            return searchedMembers.find(f => f.rbxName === m.rbxName)
+          })
+          .sort((a, b) => {
+            const prioCompare = -descendingComparator(a, b, 'prio')
+            if (prioCompare !== 0) return prioCompare
+            return -descendingComparator(a, b, 'rbxName')
+          })
+          .slice(0, 5).map(m => (
+            <Grid container spacing={2} mt={3} key={m.rbxName}>
+              <Grid size={6}>
+                <TextField
+                  disabled fullWidth
+                  label={'Roblox Name'}
+                  value={m.rbxName}
+                />
+              </Grid>
+              <ValueHandler value={m.gemChecks[m.gemChecks.length - 1].value}
+                            setValue={newValue => handleValueChange(m.rbxName, newValue)} valueSize={3}/>
+              <Grid size={1}>
+                <IconButton
+                  onClick={() => changeGuild({
+                    ...guild,
+                    members: [...guild!.members.filter(mem => mem.rbxName !== m.rbxName), m]
+                  })}
+                  sx={{display: 'flex', alignItems: 'center', height: '100%', width: '100%'}}
+                >
+                  <Check/>
+                </IconButton>
+              </Grid>
             </Grid>
-            <ValueHandler value={m.gemChecks[m.gemChecks.length-1].value} setValue={newValue => handleValueChange(m.rbxName, newValue)} valueSize={3} />
-            <Grid size={1}>
-              <IconButton
-                onClick={() => changeGuild({...guild, members: [...guild!.members.filter(mem => mem.rbxName !== m.rbxName), m]})}
-                sx={{ display: 'flex', alignItems: 'center', height: '100%', width: '100%' }}
-              >
-                <Check/>
-              </IconButton>
-            </Grid>
-          </Grid>
-        ))}
+          ))}
       </Paper>
     </Container>
   )
