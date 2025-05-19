@@ -52,6 +52,7 @@ function GuildProvider({children}: Props) {
       const response = await axios.get<Guild>(`${apiUrl}/load`, {headers})
       console.log('Loaded Guild: ', response.data.name)
       localStorage.setItem('guild-valid-until', String(Date.now() + 5 * 60 * 1000))
+      localStorage.setItem('guild', JSON.stringify(response.data))
       await changeGuild(response.data, true)
     } catch(e) {
       if (axios.isAxiosError(e)) {
