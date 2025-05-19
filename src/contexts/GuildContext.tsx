@@ -94,9 +94,8 @@ function GuildProvider({children}: Props) {
     }
   }
 
-  const changeGuild = async (newGuild: Guild, skipPost: boolean = false) => {
+  const changeGuild = async (newGuild: Guild, skipPost: boolean = true) => {
     newGuild = checkForMissingFields(newGuild)
-    localStorage.setItem('guild', JSON.stringify(newGuild))
     setGuild(newGuild)
 
     if (skipPost) return

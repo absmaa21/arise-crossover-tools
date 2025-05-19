@@ -15,7 +15,7 @@ function GuildManagerScreen() {
 
   const submitEdit = (newGuild: Guild) => {
     setEditGuild(false)
-    changeGuild(newGuild)
+    changeGuild(newGuild).then()
   }
 
   if (!guild) return (

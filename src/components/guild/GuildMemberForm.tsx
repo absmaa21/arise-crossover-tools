@@ -45,7 +45,7 @@ function GuildMemberForm({initMember, onSubmit}: Props) {
   function submit() {
     const processedMember = member
     processedMember.note = processedMember.note.trimEnd()
-    if (guild) changeGuild({...guild, members: [...guild.members.filter(m => m.rbxName !== member.rbxName), processedMember]})
+    if (guild) changeGuild({...guild, members: [...guild.members.filter(m => m.rbxName !== member.rbxName), processedMember]}).then()
     onSubmit(member)
   }
 
