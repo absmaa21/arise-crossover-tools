@@ -1,5 +1,5 @@
 import {GuildContext} from "./contexts.ts";
-import {ReactNode, useEffect, useState} from "react";
+import {ReactNode, useCallback, useEffect, useState} from "react";
 import {emptyGuildMember, Guild} from "../entities/guild.ts";
 import axios, {isAxiosError} from "axios";
 
@@ -34,8 +34,8 @@ function GuildProvider({children}: Props) {
 
   const [guild, setGuild] = useState<Guild | undefined>()
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false)
-
-  const loadGuild = async () => {
+  
+  const loadGuild = useCallback(async () => {
     const rawValidUntil = localStorage.getItem('guild-valid-until')
     if (rawValidUntil) {
       if (Date.now() < parseInt(rawValidUntil)) {
@@ -60,17 +60,20 @@ function GuildProvider({children}: Props) {
         console.error('Something else went wrong while loading guild. ', e);
       }
     }
-  }
+  }, [])
 
   useEffect(() => {
-    loadGuild()
-    refreshAuthorized()
-  }, []);
+    if (location.pathname.includes('guild')) {
+      loadGuild().then()
+      refreshAuthorized().then()
+    }
+  }, [loadGuild]);
 
   const refreshAuthorized = async () => {
     const password = localStorage.getItem('api-auth')
     if (!password || password.length < 64) {
       localStorage.removeItem('api-auth')
+      setIsAuthorized(false)
       return
     }
 

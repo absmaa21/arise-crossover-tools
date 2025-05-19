@@ -70,7 +70,7 @@ function NavigationScreen() {
       <Grid container spacing={2} display={'flex'} justifyContent={'center'}>
         {PAGES.map(page => (
           <Grid
-            size={'auto'}
+            size={'auto'} key={page.title}
             onClick={() => navigation(page.path)}
           >
             <ImageContainer sx={{ aspectRatio: 1 }}>
