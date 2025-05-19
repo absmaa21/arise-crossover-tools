@@ -58,7 +58,10 @@ function GuildDiff({children}: { children: ReactNode }) {
 
   const saveGuildChanges = () => {
     if (files.length === 0 || !guild) return
-    changeGuild(guild, false).then(() => localStorage.setItem('guild', JSON.stringify(guild)))
+    changeGuild(guild, false).then(() => {
+      localStorage.setItem('guild', JSON.stringify(guild))
+      setOldGuild(guild)
+    })
   }
 
   return (
