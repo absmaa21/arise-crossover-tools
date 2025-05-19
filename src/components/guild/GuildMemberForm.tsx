@@ -1,11 +1,10 @@
 import {emptyGuildMember, GuildMember} from "../../entities/guild.ts";
 import {useState} from "react";
-import {Button, Container, Grid, IconButton, MenuItem, Paper, TextField, Typography} from "@mui/material";
+import {Button, Container, Grid, IconButton, Paper, TextField, Typography} from "@mui/material";
 import {Delete, Save} from "@mui/icons-material";
 import {useGuild} from "../../hooks/useGuild.ts";
 import {formatDateToGerman, parseGermanDate} from "../../utils/germanDate.ts";
-import {getFormattedNumber, getHighestPotency} from "../../utils/getFormattedNumber.ts";
-import {ITER_POTENCY, Potency} from "../../entities/potency.ts";
+import ValueHandler from "../ValueHandler.tsx";
 
 
 interface Props {
@@ -124,33 +123,12 @@ function GuildMemberForm({initMember, onSubmit}: Props) {
 
         {member.gemChecks.map((c, i) => (
           <Grid container spacing={1} mb={2}>
-            <Grid size={2.4}>
-              <TextField
-                fullWidth
-                label="Gems"
-                type="number"
-                value={parseInt(getFormattedNumber(c.value))}
-                onChange={(e) => handleValueChange(i, 'value', (parseInt(e.target.value) || 1) * getHighestPotency(c.value))}
-              />
-            </Grid>
-            <Grid size={2.4}>
-              <TextField
-                select
-                label="Potency"
-                fullWidth
-                value={getHighestPotency(c.value)}
-                onChange={e => handleValueChange(i, 'value', parseInt(getFormattedNumber(c.value)) * Number(e.target.value))}
-              >
-                {ITER_POTENCY.map((pot) => (
-                  <MenuItem
-                    key={pot}
-                    value={Potency[pot as keyof typeof Potency]}
-                  >
-                    {pot}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
+            <ValueHandler
+              value={c.value}
+              setValue={v => handleValueChange(i, 'value', v)}
+              valueSize={2.4}
+              potencySize={2.4}
+            />
             <Grid size={6}>
               <TextField
                 fullWidth required label="Date"
