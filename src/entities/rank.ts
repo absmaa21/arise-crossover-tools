@@ -9,4 +9,6 @@ export enum Rank {
   G,
   N,
   "N+",
+  M,
+  "M+",
 }

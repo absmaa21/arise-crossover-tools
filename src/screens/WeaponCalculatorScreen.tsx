@@ -5,14 +5,14 @@ import {getFormattedNumber} from "../utils/getFormattedNumber.ts";
 import ValueHandler from "../components/ValueHandler.tsx";
 import {Potency} from "../entities/potency.ts";
 
-const RANKS: string[] = Object.keys(Rank).filter((key) => Rank[key as keyof typeof Rank] <= Rank.SS)
+const RANKS: string[] = Object.keys(Rank).filter((key) => Rank[key as keyof typeof Rank] <= Rank.G)
 
 
 function WeaponCalculatorScreen() {
   const [swords, setSwords] = useState<Record<string, number>>({});
-  const [targetRank, setTargetRank] = useState<Rank>(Rank.SS);
+  const [targetRank, setTargetRank] = useState<Rank>(Rank.G);
   const [result, setResult] = useState<string | null>(null);
-  const [price, setPrice] = useState<number>(30.42 * Potency.Sx)
+  const [price, setPrice] = useState<number>(2.19 * Potency.Sp)
 
   const handleSwordChange = (rank: string, value: string) => {
     const new_num = parseInt(value, 10) || 0
