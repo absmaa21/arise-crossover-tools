@@ -5,14 +5,15 @@ import {getFormattedNumber} from "../utils/getFormattedNumber.ts";
 import ValueHandler from "../components/ValueHandler.tsx";
 import {Potency} from "../entities/potency.ts";
 
-const RANKS: string[] = Object.keys(Rank).filter((key) => Rank[key as keyof typeof Rank] <= Rank.G)
+const RANKS: string[] = Object.keys(Rank).filter((key) => Rank[key as keyof typeof Rank] <= Rank.N)
 
 
 function WeaponCalculatorScreen() {
   const [swords, setSwords] = useState<Record<string, number>>({});
-  const [targetRank, setTargetRank] = useState<Rank>(Rank.G);
+  const [startRank, setStartRank] = useState<Rank>(Rank.E)
+  const [targetRank, setTargetRank] = useState<Rank>(Rank.N);
   const [result, setResult] = useState<string | null>(null);
-  const [price, setPrice] = useState<number>(2.19 * Potency.Sp)
+  const [price, setPrice] = useState<number>(12.8 * Potency.No)
 
   const handleSwordChange = (rank: string, value: string) => {
     const new_num = parseInt(value, 10) || 0
@@ -20,14 +21,14 @@ function WeaponCalculatorScreen() {
   };
 
   const calculate = useCallback(() => {
-    if (targetRank <= Rank.E) {
-      setResult('Target must be higher then Rank E.');
+    if (targetRank <= startRank) {
+      setResult(`Target must be higher then ${Rank[startRank]}.`);
       return;
     }
 
     let missing = 3;
 
-    for (let rank: Rank = targetRank; rank > Rank.E; rank--) {
+    for (let rank: Rank = targetRank; rank > startRank; rank--) {
 
       const cur_rank_key = Object.values(Rank)[rank]
       const owned = swords[cur_rank_key] || 0
@@ -49,9 +50,9 @@ function WeaponCalculatorScreen() {
       missing = 3 * missing_cur_rank
     }
 
-    missing -= swords[Object.values(Rank)[Rank.E]] || 0
-    setResult(`Missing E Swords: ${missing}\nCosts: ${getFormattedNumber(missing * price)}`);
-  }, [price, swords, targetRank])
+    missing -= swords[Object.values(Rank)[startRank]] || 0
+    setResult(`Missing ${Rank[startRank]} Swords: ${missing}\nCosts: ${getFormattedNumber(missing * price)}`);
+  }, [price, startRank, swords, targetRank])
 
   useEffect(calculate, [calculate]);
 
@@ -76,7 +77,21 @@ function WeaponCalculatorScreen() {
       </Grid>
 
       <Grid container spacing={2} marginTop={4}>
-        <Grid size={{ xs: 12, sm: 4 }}>
+        <Grid size={{ xs: 12, sm: 6 }}>
+          <TextField
+            select
+            label="Start Rank"
+            fullWidth
+            value={startRank}
+            onChange={(e) => setStartRank(Number(e.target.value))}
+          >
+            {RANKS.map((rank) => Rank[rank as keyof typeof Rank] >= Rank.E && (
+              <MenuItem key={rank} value={Rank[rank as keyof typeof Rank]}>{rank}</MenuItem>
+            ))}
+          </TextField>
+        </Grid>
+
+        <Grid size={{ xs: 12, sm: 6 }}>
           <TextField
             select
             label="Target Rank"
@@ -91,7 +106,7 @@ function WeaponCalculatorScreen() {
         </Grid>
 
         <ValueHandler value={price} setValue={setPrice} valueLabel={'Sword Price'}
-                      valueSize={5} potencySize={3} storeKey={'sword-price'} />
+                      valueSize={7} potencySize={5} storeKey={'sword-price'} />
       </Grid>
 
       {result && (

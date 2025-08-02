@@ -11,4 +11,8 @@ export enum Rank {
   "N+",
   M,
   "M+",
+  GM,
+  "GM+",
+  UGM,
+  "UGM+",
 }
